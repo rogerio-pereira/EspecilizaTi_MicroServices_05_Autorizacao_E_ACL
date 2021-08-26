@@ -1,0 +1,76 @@
+version: "3.7"
+services: 
+    #Micro service 01
+    micro_05:
+        build: 
+            args: 
+                user: micro_05 
+                uid: 1000 
+            context: ./
+            dockerfile: Dockerfile
+        image: laravel-app
+        restart: unless-stopped
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - redis
+            - queue
+        networks:
+            - microauth
+
+    #nginx
+    nginx:
+        image: nginx:alpine
+        restart: unless-stopped
+        ports:
+            - 8007:80
+        volumes:
+            - ./:/var/www
+            - ./docker/nginx/:/etc/nginx/conf.d 
+        networks:
+            - microauth
+
+    #mysql
+    db_micro_05:
+        image: mysql:5.7.22
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_USER: ${DB_USERNAME}
+        volumes:
+            - ./.docker/mysql/db_data:/var/lib/mysql 
+        networks:
+            - microauth
+
+    #queue micro 01
+    queue:
+        build: 
+            args: 
+                user: micro_05 
+                uid: 1000
+            context: ./
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        command: "php artisan queue:work"
+        volumes:
+            - ./:/var/www
+        depends_on: 
+            - redis
+        networks:
+            - microauth
+
+    #redis
+    redis:
+        image: redis:latest
+        networks:
+            - microauth
+
+    
+networks:
+    microauth:
+        driver: bridge    
+
+        
