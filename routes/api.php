@@ -16,6 +16,7 @@ Route::get('/', function() {
 
 Route::post('/register', [RegisterController::class, 'store']);
 Route::post('/auth', [AuthController::class, 'auth']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::apiResource('/users', UserController::class);    
