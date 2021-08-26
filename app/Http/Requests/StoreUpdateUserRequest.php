@@ -23,9 +23,11 @@ class StoreUpdateUserRequest extends FormRequest
      */
     public function rules()
     {
+        $uuid = $this->user;
+
         $rules = [
             'name' => 'required|string|min:3|max:100',
-            'email' => 'required|email|max:255',
+            'email' => ['required', 'email', 'max:255', "unique:users,email,{$uuid},uuid"],
             'password' => 'required|min:4|max:16',
         ];
 
