@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\{
-    UserController
+    UserController,
+    ResourceController
 };
 use App\Http\Controllers\Api\Auth\{
     RegisterController,
@@ -21,4 +22,6 @@ Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::apiResource('/users', UserController::class);    
+    
+    Route::get('/resources', [ResourceController::class, 'index']);    
 });
