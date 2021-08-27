@@ -5,9 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddPermissionsUserRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\PermissionResource;
+use App\Http\Requests\AddPermissionsUserRequest;
 
 class PermissionUserController extends Controller
 {
@@ -30,6 +31,9 @@ class PermissionUserController extends Controller
 
     public function addPermissionsUser(AddPermissionsUserRequest $request)
     {
+        if(Gate::denies('add_permissions_user'))
+            abort(403, 'Forbiden');
+
         $user = $this->userRepository
                     ->where('uuid', $request->user)
                     ->firstOrFail();
