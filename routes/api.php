@@ -24,6 +24,7 @@ Route::get('/me', [AuthController::class, 'me'])->middleware('auth:sanctum');
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('/users/{uuid}/permissions', [PermissionUserController::class, 'permissionsUser']);
     Route::post('/users/permissions', [PermissionUserController::class, 'addPermissionsUser']);
+    Route::delete('/users/permissions', [PermissionUserController::class, 'removePermissionsUser'])->middleware('can:delete_permission_user');
     Route::get('/users/can/{permission}', [PermissionUserController::class, 'userHasPermission']);
 
     Route::apiResource('/users', UserController::class);

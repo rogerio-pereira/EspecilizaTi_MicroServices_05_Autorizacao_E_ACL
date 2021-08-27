@@ -42,6 +42,18 @@ class PermissionUserController extends Controller
         return response()->json(['message' => 'success']);
     }
 
+    public function removePermissionsUser(Request $request)
+    {
+        $user = $this->userRepository
+                    ->where('uuid', $request->user)
+                    ->firstOrFail();
+
+        if($request->permission)
+            $user->permissions()->detach($request->permission);
+
+        return response()->json(['message' => 'success']);
+    }
+
     public function userHasPermission($permission)
     {
         $user =  Auth::user();
