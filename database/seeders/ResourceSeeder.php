@@ -27,5 +27,8 @@ class ResourceSeeder extends Seeder
         // $company->permissions()->create(['name' => 'criar_empresa']);
         $company->permissions()->create(['name' => 'editar_empresa']);
         $company->permissions()->create(['name' => 'deletar_empresa']);
+
+        $admin = Resource::create(['name' => 'Admins']);
+        $admin->permissions()->create(['name' => 'users']);
     }
 }

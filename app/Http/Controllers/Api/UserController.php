@@ -15,6 +15,8 @@ class UserController extends Controller
     public function __construct(User $repository)
     {
         $this->repository = $repository;
+
+        // $this->middleware('can:users');
     }
 
     /**
