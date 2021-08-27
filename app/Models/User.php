@@ -59,4 +59,9 @@ class User extends Authenticatable
         else
             return false;
     }
+
+    public function isSuperAdmin()
+    {
+        return in_array($this->email, config('acl.admins'));
+    }
 }
