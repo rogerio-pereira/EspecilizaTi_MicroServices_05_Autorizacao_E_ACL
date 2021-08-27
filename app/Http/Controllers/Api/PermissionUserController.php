@@ -37,4 +37,14 @@ class PermissionUserController extends Controller
 
         return response()->json(['message' => 'success']);
     }
+
+    public function userHasPermission($permission)
+    {
+        $user =  Auth::user();
+        
+        if(!$user->hasPermission($permission))
+            return response()->json(['message' => 'Unauthorized'], 403);
+
+        return response()->json(['message' => 'success']);
+    }
 }
