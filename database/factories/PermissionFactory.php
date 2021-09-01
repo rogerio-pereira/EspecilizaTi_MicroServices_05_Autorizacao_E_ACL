@@ -24,7 +24,7 @@ class PermissionFactory extends Factory
     {
         return [
             'resource_id' => Resource::factory(),
-            'name' => $this->faker()->unique()->word(),
+            'name' => $this->faker->unique()->word(),
         ];
     }
 }
