@@ -118,4 +118,76 @@ class UserTest extends TestCase
 
         $response->assertStatus(201);
     }
+
+    public function test_update_user_404()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->putJson('/users/fake', [
+                            'name' => 'Test User',
+                            'email' => 'test@test.com',
+                            'password' => 'password',
+                        ]);
+
+        $response->assertStatus(404);
+    }
+
+    public function test_validations_update_user()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->putJson('/users/'.$user->uuid, []);
+
+        $response->assertStatus(422);
+    }
+
+    public function test_update_user()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->putJson('/users/'.$user->uuid, [
+                            'name' => 'Test User Updated',
+                            'email' => 'test@test.com',
+                        ]);
+
+        $response->assertStatus(200);
+    }
+
+    public function test_delete_user_404()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->deleteJson('/users/fake');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_delete_user()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->deleteJson('/users/'.$user->uuid);
+
+        $response->assertStatus(200);
+    }
 }
