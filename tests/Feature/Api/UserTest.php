@@ -61,4 +61,31 @@ class UserTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(10, 'data');
     }
+
+    public function test_get_single_user_fail()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->getJson('/users/fake');
+
+        $response->assertStatus(404);
+    }
+
+    public function test_get_single_user()
+    {
+        $permission = Permission::factory()->create(['name' => 'users']);
+        $user = User::factory()->create();
+        $user->permissions()->attach($permission);
+        $token = $user->createToken('test')->plainTextToken;
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer '.$token])
+                        ->getJson('/users/'.$user->uuid);
+
+        // $response->dump();
+        $response->assertStatus(200);
+    }
 }
